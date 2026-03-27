@@ -1,0 +1,188 @@
+* {
+    border: none;
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.google-sans-flex {
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings:
+    "slnt" 0,
+    "wdth" 100,
+    "GRAD" 0,
+    "ROND" 0;
+}
+
+body {
+    background-color: #f5f5f7;
+    height: 500vh;
+    width: 100%;
+}
+
+.navi {
+    width: 100%;
+    margin-top: -1.5pc;
+    position: sticky;
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.849);
+    backdrop-filter: blur(10px);
+}
+
+.navi__content {
+    display: inline-flex;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+}
+
+.navi__link {
+    display: inline-flex;
+    align-items: center;
+}
+
+.navi__link a{
+    color: #3d3d3d;
+    text-decoration: none;
+    font-family: "Public Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-size: 12px;
+    padding: 15px;
+}
+
+.navi__link svg{
+    height: 20px;
+    width: 20px;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.logo__apple {
+    width: 50px;
+    height: 50px;
+}
+
+.iphones {
+    width: 100%;
+}
+
+.title__content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 3pc;
+}
+
+.title__iphone h1, .title__macbook__neo h1{
+    text-align: center;
+    font-size: 58px;
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 500;
+}
+
+.discover__iphones, .discover__macbook__neo  {
+    text-align: center;
+}
+
+.discover__iphones h1, 
+.discover__macbook__neo h1 {
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 27px;
+}
+
+.button__content {
+    display: inline-flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 1pc;
+    gap: 10px;
+}
+
+.button__link,
+.button__buy a, 
+.button__information a,
+.button__buy__neo a{
+    margin-top: 1pc;
+    border-radius: 50px;
+}
+
+.button__information a {
+    padding: 12px 25px ;
+    background-color: #0071e3;
+    color: white;
+}
+
+.button__buy a,
+.button__buy__neo a{    background-color: none;
+    padding: 12px 25px ;
+    color: #0071e3;
+    border: 1px solid #0071e3;
+}
+
+.button__link a {
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 17px;
+    text-decoration: none;
+}
+
+.macbook {
+    margin-top: -4pc;
+}
+
+.image__content {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.image__content img {
+    width: 800px;
+    margin-top: 1pc;
+}
+
+.title__macbook__neo h1{
+    font-weight: 600;
+}
+
+.ipadAir {
+    width: 100%;
+    height: 90vh;
+    margin-top: 1pc;
+    display: flex;
+    background: linear-gradient(to bottom, #addcee, #f5f5f7);
+}
+
+.ipadAir__content {
+    width: 100%;
+}
+
+.ipadAir__title img, .ipadAir__image img {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+}
+
+.ipadAir__image img {
+    width: 600px;
+    margin-top: 2pc;
+}
+
+
+
