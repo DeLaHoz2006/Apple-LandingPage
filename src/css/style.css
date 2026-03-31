@@ -107,14 +107,23 @@ body {
     width: 100%;
     margin-top: 1pc;
     gap: 10px;
+    background-color: none;
 }
 
 .button__link,
 .button__buy a, 
 .button__information a,
-.button__buy__neo a{
+.button__buy__neo a
+.button__buy__ipad a
+.button__buy__airpods a{
     margin-top: 1pc;
     border-radius: 50px;
+}
+
+.button__link {
+    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .button__information a {
@@ -124,10 +133,13 @@ body {
 }
 
 .button__buy a,
-.button__buy__neo a{    background-color: none;
+.button__buy__neo a,
+.button__buy__ipad a,
+.button__buy__airpods a{
     padding: 12px 25px ;
     color: #0071e3;
     border: 1px solid #0071e3;
+    border-radius: 50px;
 }
 
 .button__link a {
@@ -160,7 +172,7 @@ body {
 
 .ipadAir {
     width: 100%;
-    height: 90vh;
+    height: auto;
     margin-top: 1pc;
     display: flex;
     background: linear-gradient(to bottom, #addcee, #f5f5f7);
@@ -168,6 +180,8 @@ body {
 
 .ipadAir__content {
     width: 100%;
+    margin-top: 3pc;
+    height: 65vh;
 }
 
 .ipadAir__title img, .ipadAir__image img {
@@ -179,9 +193,133 @@ body {
     width: 200px;
 }
 
+.ipadAir-m4 {
+    text-align: center;
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    margin-top: 1pc;
+}
+
+.ipadAir-m4 h2 {
+    font-size: 28px;
+    font-weight: 350;
+}
+
 .ipadAir__image img {
     width: 600px;
+    margin-top: 4pc;
+    margin-right: 45rem;
+}
+
+
+.fifty__container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.fifty__years, .apple__worldwide, .airpods {
+    display: grid;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    height: 36pc;
+}
+.apple__worldwide {
+    width: 50%; 
+    background-color: rgb(0, 0, 0);
+}
+
+.fifty__years img{
+    width: 250px;
+}
+
+.button__read, .button__learn
+.button__airpods {
+    margin-top: -7pc;
+    text-align: center;
+}
+
+.button__read button,
+.button__learn button{
+    background-color: #0071e3;
+    padding: 12px 25px;
+    border-radius: 25px;
+}
+
+.button__read a,
+.button__learn a,
+.airpods__link a {
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 350;
+    font-size: 15px;
+    text-decoration: none;
+    color: white;
+}
+
+.button__learn button {
     margin-top: 2pc;
+    padding: 10px 13px;
+}
+
+.airpods__link a {
+    padding: 10px 15px;
+}
+
+.airpods__buy a {
+    padding: 10px 18px;
+    font-size: 14px;
+}
+
+.apple__worldwide img{
+    width: 450px;
+    justify-content: center;
+    align-items: center;
+}
+
+.airpods img {
+    width: 280px;
+}
+
+.content__airpods {
+    margin-top: -6pc;
+}
+
+.airpods__max {
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    text-decoration: none;
+    margin-top: -4pc;
+    text-align: center;
+}
+
+.airpods__max p {
+    font-weight: 400;
+}
+
+
+.watch {
+    width: 50%;
+    background-color: black;
+}
+
+.apple__watch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.apple__watch img {
+    display: flex;
+    width: 850px;
+    justify-content: center;
+    align-items: center;
 }
 
 
