@@ -222,14 +222,7 @@
     align-items: center;
     height: 36pc;
 }
-.apple__worldwide {
-    width: 50%; 
-    background-color: rgb(0, 0, 0);
-}
 
-.fifty__years img{
-    width: 250px;
-}
 
 .button__read, .button__learn
 .button__airpods {
@@ -270,10 +263,28 @@
     font-size: 14px;
 }
 
-.apple__worldwide img{
+.worldwide {
+    width: 100%;
+}
+
+.worldwide img{
     width: 450px;
+    margin-top: 40px;
     justify-content: center;
     align-items: center;
+}
+
+.apple__worldwide {
+    width: 50%;
+    margin-left: 13px;
+    background-color: rgb(0, 0, 0);
+}
+
+.apple__worldwide button {
+    display: flex;
+    justify-content: center;
+    margin-top: 0pc;
+    margin-bottom: 7pc;
 }
 
 .airpods img {
@@ -301,14 +312,39 @@
 
 
 .watch {
-    width: 50%;
-    background-color: black;
+    width: 49%;
+    height: auto;
 }
 
-.apple__watch {
+.watch__content {
     display: flex;
-    align-items: center;
     justify-content: center;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.watch__info {
+    width: 100%;
+    text-align: center;
+    margin-top: -8pc;
+
+    font-family: "Google Sans Flex", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-size: 11px;
+
+}
+
+.watch__info h1 {
+    font-weight: 400;
+}
+
+.watch__info img{
+    width: 280px;
+    margin-top: 11pc;
 }
 
 .apple__watch img {
@@ -316,6 +352,7 @@
     width: 850px;
     justify-content: center;
     align-items: center;
+    margin-top: 6pc;
 }
 
 
