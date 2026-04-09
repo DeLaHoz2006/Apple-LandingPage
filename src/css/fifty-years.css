@@ -62,7 +62,7 @@ body {
     flex-direction: column;
     flex-wrap: wrap;
     width: 100%;
-    background-image: url(/src/video/aniversary/Apple-aniversary.mp4) center/cover no-repeat;
+    background-color: #000000;
     margin-top: -4pc;
 }
 
