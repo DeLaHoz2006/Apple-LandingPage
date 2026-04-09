@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const heroViewport = document.querySelector("[data-carousel]");
 
     // Track (pista) donde están los slides principales
-    const heroTrack = heroViewport?.querySelector(".appleTv__track");
+    const heroTrack = heroViewport?.querySelector(".appleTv__trac k");
 
     // Contenedor del carrusel pequeño (miniaturas)
     const miniViewport = document.querySelector(".appleTv__miniViewport");
