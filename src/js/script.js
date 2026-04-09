@@ -1,62 +1,27 @@
-// Espera a que todo el HTML esté cargado antes de ejecutar el script
 document.addEventListener("DOMContentLoaded", () => {
-
-    // ==============================
-    // SELECTORES DEL DOM
-    // ==============================
-
-    // Contenedor principal del carrusel
     const heroViewport = document.querySelector("[data-carousel]");
-
-    // Track (pista) donde están los slides principales
-    const heroTrack = heroViewport?.querySelector(".appleTv__trac k");
-
-    // Contenedor del carrusel pequeño (miniaturas)
+    const heroTrack = heroViewport?.querySelector(".appleTv__track");
     const miniViewport = document.querySelector(".appleTv__miniViewport");
-
-    // Track de las miniaturas
     const miniTrack = miniViewport?.querySelector("[data-mini-carousel]");
-
-    // Contenedor de los dots (indicadores)
     const dotsContainer = document.querySelector("#carouselDots");
-
-    // Botones de navegación
     const prevButton = heroViewport?.querySelector('[data-direction="prev"]');
     const nextButton = heroViewport?.querySelector('[data-direction="next"]');
-
-    // Botón de autoplay (play/pausa)
     const toggleButton = document.querySelector("[data-carousel-toggle]");
     const toggleIcon = toggleButton?.querySelector(".appleTv__toggleIcon");
-
-    // Contenedor general (para detectar hover, focus, etc.)
     const interactionRoot = document.querySelector(".appleTv");
-
-    // Detecta si el usuario prefiere menos animaciones (accesibilidad)
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-    // Índice inicial (si viene definido en HTML)
     const startIndexValue = Number.parseInt(heroViewport?.dataset.startIndex ?? "0", 10);
 
-    // Si falta algo importante, se detiene todo
     if (!heroViewport || !heroTrack || !miniViewport || !miniTrack || !dotsContainer || !prevButton || !nextButton) {
         return;
     }
 
-    // ==============================
-    // VARIABLES DE CONTROL
-    // ==============================
-
     const startIndex = Number.isNaN(startIndexValue) ? 0 : startIndexValue;
+    let autoplayId = 0;
+    let isUserPaused = false;
 
-    let autoplayId = 0;       // ID del setInterval
-    let isUserPaused = false; // Si el usuario pausó manualmente
-
-    // Función para hacer loop infinito (ej: -1 → último elemento)
     const wrapIndex = (index, total) => (index + total) % total;
 
-    // ==============================
-    // FUNCIÓN PRINCIPAL DEL CARRUSEL
-    // ==============================
     const createLoopTrack = ({
         viewport,
         track,
@@ -66,46 +31,48 @@ document.addEventListener("DOMContentLoaded", () => {
         duration = 680,
         onChange
     }) => {
-
-        // Obtiene todos los slides originales
         const originalItems = Array.from(track.querySelectorAll(itemSelector));
 
         if (!originalItems.length) {
             return null;
         }
 
-        // Asigna índice lógico a cada item
         originalItems.forEach((item, index) => {
             item.dataset.logicalIndex = String(index);
         });
 
-        // Clona primero y último para efecto infinito
-        const firstClone = originalItems[0].cloneNode(true);
-        const lastClone = originalItems[originalItems.length - 1].cloneNode(true);
+        const cloneCount = originalItems.length;
+        const prependFragment = document.createDocumentFragment();
+        const appendFragment = document.createDocumentFragment();
 
-        firstClone.dataset.clone = "true";
-        lastClone.dataset.clone = "true";
+        originalItems.forEach((item) => {
+            const beforeClone = item.cloneNode(true);
+            const afterClone = item.cloneNode(true);
 
-        track.prepend(lastClone);
-        track.append(firstClone);
+            beforeClone.dataset.clone = "true";
+            afterClone.dataset.clone = "true";
 
-        // Lista final de items (incluye clones)
+            prependFragment.appendChild(beforeClone);
+            appendFragment.appendChild(afterClone);
+        });
+
+        track.prepend(prependFragment);
+        track.append(appendFragment);
+
         const items = Array.from(track.querySelectorAll(itemSelector));
-
-        // Índices
-        let physicalIndex = wrapIndex(startAt, originalItems.length) + 1;
+        let physicalIndex = wrapIndex(startAt, originalItems.length) + cloneCount;
         let logicalIndex = wrapIndex(startAt, originalItems.length);
-
         let isAnimating = false;
 
-        // Calcula el desplazamiento en px
         const getTranslate = (index) => {
             const item = items[index];
-            if (!item) return 0;
+
+            if (!item) {
+                return 0;
+            }
 
             const baseOffset = -item.offsetLeft;
 
-            // Centra el elemento activo
             if (align === "center") {
                 return baseOffset + ((viewport.clientWidth - item.offsetWidth) / 2);
             }
@@ -113,9 +80,10 @@ document.addEventListener("DOMContentLoaded", () => {
             return baseOffset;
         };
 
-        // Actualiza clases visuales
         const updateVisualState = () => {
-            if (align !== "center") return;
+            if (align !== "center") {
+                return;
+            }
 
             const previousIndex = physicalIndex - 1;
             const nextIndex = physicalIndex + 1;
@@ -129,27 +97,20 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         };
 
-        // Aplica transformación CSS
         const applyTransform = (animate) => {
             track.style.transition = animate
                 ? `transform ${duration}ms cubic-bezier(0.22, 1, 0.36, 1)`
                 : "none";
-
             track.style.transform = `translate3d(${getTranslate(physicalIndex)}px, 0, 0)`;
-
             updateVisualState();
         };
 
-        // Sincroniza índice lógico
         const syncLogical = () => {
             const item = items[physicalIndex];
             logicalIndex = Number.parseInt(item?.dataset.logicalIndex ?? "0", 10);
-
-            // Callback externo (ej: actualizar dots)
             onChange?.(logicalIndex);
         };
 
-        // Salto interno (cuando llega a clones)
         const jumpTo = (nextPhysicalIndex) => {
             physicalIndex = nextPhysicalIndex;
             applyTransform(false);
@@ -157,19 +118,18 @@ document.addEventListener("DOMContentLoaded", () => {
             isAnimating = false;
         };
 
-        // Evento al terminar animación
         track.addEventListener("transitionend", (event) => {
-            if (event.target !== track) return;
-
-            // Si llegó al clone del inicio
-            if (physicalIndex === 0) {
-                jumpTo(originalItems.length);
+            if (event.target !== track) {
                 return;
             }
 
-            // Si llegó al clone del final
-            if (physicalIndex === items.length - 1) {
-                jumpTo(1);
+            if (physicalIndex < cloneCount) {
+                jumpTo(physicalIndex + originalItems.length);
+                return;
+            }
+
+            if (physicalIndex >= cloneCount + originalItems.length) {
+                jumpTo(physicalIndex - originalItems.length);
                 return;
             }
 
@@ -177,7 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
             syncLogical();
         });
 
-        // API del carrusel
         const api = {
             get count() {
                 return originalItems.length;
@@ -186,22 +145,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 return logicalIndex;
             },
             next() {
-                if (isAnimating) return;
+                if (isAnimating) {
+                    return;
+                }
 
                 physicalIndex += 1;
                 logicalIndex = wrapIndex(logicalIndex + 1, originalItems.length);
                 isAnimating = true;
-
                 onChange?.(logicalIndex);
                 applyTransform(true);
             },
             prev() {
-                if (isAnimating) return;
+                if (isAnimating) {
+                    return;
+                }
 
                 physicalIndex -= 1;
                 logicalIndex = wrapIndex(logicalIndex - 1, originalItems.length);
                 isAnimating = true;
-
                 onChange?.(logicalIndex);
                 applyTransform(true);
             },
@@ -209,9 +170,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const nextIndex = wrapIndex(index, originalItems.length);
 
                 logicalIndex = nextIndex;
-                physicalIndex = nextIndex + 1;
+                physicalIndex = nextIndex + cloneCount;
                 isAnimating = animate;
-
                 onChange?.(logicalIndex);
                 applyTransform(animate);
             },
@@ -221,22 +181,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         };
 
-        // Inicialización
         applyTransform(false);
         syncLogical();
 
         return api;
     };
 
-    // ==============================
-    // DOTS (INDICADORES)
-    // ==============================
-
     const heroDots = [];
-
     const updateDots = (activeIndex, total) => {
-
-        // Crear dots solo una vez
         if (heroDots.length === 0) {
             dotsContainer.replaceChildren();
 
@@ -245,11 +197,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 dot.type = "button";
                 dot.className = "appleTv__dot";
-
                 dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
                 dot.setAttribute("aria-pressed", "false");
-
-                // Click en dot
                 dot.addEventListener("click", () => {
                     hero?.goTo(index, true);
                     mini?.goTo(index, true);
@@ -261,7 +210,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // Actualizar estado activo
         heroDots.forEach((dot, index) => {
             const isActive = index === activeIndex;
 
@@ -269,10 +217,6 @@ document.addEventListener("DOMContentLoaded", () => {
             dot.setAttribute("aria-pressed", String(isActive));
         });
     };
-
-    // ==============================
-    // INSTANCIAS DEL CARRUSEL
-    // ==============================
 
     const heroSlideCount = heroTrack.querySelectorAll(".appleTv__item").length;
 
@@ -295,60 +239,118 @@ document.addEventListener("DOMContentLoaded", () => {
         duration: 680
     });
 
-    if (!hero || !mini) return;
+    if (!hero || !mini) {
+        return;
+    }
 
-    // ==============================
-    // AUTOPLAY
-    // ==============================
-
-    const startAutoplay = () => {
-        clearInterval(autoplayId);
-
-        if (reducedMotion.matches || isUserPaused) {
-            autoplayId = 0;
+    const updateToggle = () => {
+        if (!toggleButton || !toggleIcon) {
             return;
         }
 
-        autoplayId = setInterval(() => {
-            hero.next();
-            mini.next();
+        const autoplayEnabled = !isUserPaused && !reducedMotion.matches;
+
+        toggleButton.setAttribute("aria-label", autoplayEnabled ? "Pause autoplay" : "Start autoplay");
+        toggleButton.setAttribute("aria-pressed", String(!autoplayEnabled));
+        toggleIcon.textContent = autoplayEnabled ? "||" : ">";
+    };
+
+    const autoplayStep = (direction = "next") => {
+        if (direction === "prev") {
+            hero.prev();
+            mini.prev();
+            return;
+        }
+
+        hero.next();
+        mini.next();
+    };
+
+    const startAutoplay = () => {
+        window.clearInterval(autoplayId);
+
+        if (reducedMotion.matches || isUserPaused) {
+            autoplayId = 0;
+            updateToggle();
+            return;
+        }
+
+        autoplayId = window.setInterval(() => {
+            autoplayStep("next");
         }, 4300);
+
+        updateToggle();
     };
 
     const stopAutoplay = () => {
-        clearInterval(autoplayId);
+        window.clearInterval(autoplayId);
         autoplayId = 0;
+        updateToggle();
     };
 
     const restartAutoplayIfAllowed = () => {
-        if (!isUserPaused) {
-            startAutoplay();
+        if (isUserPaused) {
+            updateToggle();
+            return;
         }
+
+        startAutoplay();
     };
 
-    // ==============================
-    // EVENTOS
-    // ==============================
-
     prevButton.addEventListener("click", () => {
-        hero.prev();
-        mini.prev();
+        autoplayStep("prev");
         restartAutoplayIfAllowed();
     });
 
     nextButton.addEventListener("click", () => {
-        hero.next();
-        mini.next();
+        autoplayStep("next");
         restartAutoplayIfAllowed();
     });
 
-    // ==============================
-    // INICIALIZACIÓN FINAL
-    // ==============================
+    toggleButton?.addEventListener("click", () => {
+        if (isUserPaused) {
+            isUserPaused = false;
+            startAutoplay();
+            return;
+        }
+
+        isUserPaused = true;
+        stopAutoplay();
+    });
+
+    interactionRoot?.addEventListener("mouseenter", stopAutoplay);
+    interactionRoot?.addEventListener("mouseleave", restartAutoplayIfAllowed);
+    interactionRoot?.addEventListener("focusin", stopAutoplay);
+    interactionRoot?.addEventListener("focusout", () => {
+        if (!interactionRoot.contains(document.activeElement)) {
+            restartAutoplayIfAllowed();
+        }
+    });
+    interactionRoot?.addEventListener("touchstart", stopAutoplay, { passive: true });
+    interactionRoot?.addEventListener("touchend", restartAutoplayIfAllowed, { passive: true });
+
+    window.addEventListener("resize", () => {
+        hero.refresh();
+        mini.refresh();
+    });
+
+    if (typeof reducedMotion.addEventListener === "function") {
+        reducedMotion.addEventListener("change", () => {
+            if (reducedMotion.matches) {
+                stopAutoplay();
+                hero.refresh();
+                mini.refresh();
+                return;
+            }
+
+            startAutoplay();
+        });
+    }
 
     updateDots(hero.logicalIndex, hero.count);
+    updateToggle();
 
-    requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
         hero.goTo(startIndex, false);
         mini.goTo(startIndex, false);
         startAutoplay();
